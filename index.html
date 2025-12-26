@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ParkEase | Final Stable</title>
+    <title>ParkEase | Final Stable V7</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -24,7 +24,21 @@
 
         /* SCROLLABLE WRAPPER */
         .app-container { display: flex; height: 100vh; overflow: hidden; }
-        .main-wrapper { flex: 1; padding: 30px; overflow-y: auto; height: 100%; }
+        .main-wrapper { flex: 1; padding: 30px; overflow-y: auto; height: 100%; display: flex; flex-direction: column; }
+
+        /* HEADER */
+        .app-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--border);
+        }
+        .user-welcome { font-size: 1.1rem; color: var(--text-main); }
+        .btn-logout-top {
+            background: rgba(239, 68, 68, 0.1); color: var(--danger);
+            border: 1px solid var(--danger); padding: 8px 16px;
+            border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .btn-logout-top:hover { background: var(--danger); color: white; }
 
         /* SIDEBAR */
         .sidebar { width: 260px; background: var(--card-bg); border-right: 1px solid var(--border); padding: 25px; display: flex; flex-direction: column; z-index: 1500; }
@@ -36,6 +50,7 @@
             .sidebar.open { left: 0; }
             .mobile-nav { display: flex; }
             .main-wrapper { padding-top: 80px; }
+            .app-header { display: none; }
         }
 
         .brand { font-size: 1.4rem; font-weight: 800; margin-bottom: 40px; color: var(--primary); display: flex; align-items: center; gap: 10px; }
@@ -73,27 +88,68 @@
         .select-box { width: 100%; padding: 10px; background: var(--input-bg); border: 1px solid var(--border); color: var(--text-main); border-radius: 6px; }
 
         /* TICKET & TABLE */
-        .ticket { border: 2px solid var(--border); border-radius: 10px; display: flex; margin-bottom: 10px; overflow: hidden; background: var(--card-bg); }
+        .ticket { border: 2px solid var(--border); border-radius: 10px; display: flex; margin-bottom: 10px; overflow: hidden; background: var(--card-bg); flex-direction: column; }
+        .ticket-main { display: flex; border-bottom: 1px dashed var(--border); }
         .ticket-left { padding: 15px; flex: 1; border-right: 2px dashed var(--border); }
         .ticket-right { width: 80px; background: var(--bg); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.2rem; }
+        .ticket-actions { padding: 10px; background: var(--bg); display: flex; justify-content: flex-end; }
         
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); }
         th { color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; }
 
-        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; background: rgba(34, 197, 94, 0.15); color: var(--success); }
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; display: inline-block; }
+        .status-badge.reserved { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+        .status-badge.parked { background: rgba(34, 197, 94, 0.15); color: var(--success); }
         .theme-btn { background: none; border: 1px solid var(--border); color: var(--text-main); padding: 8px 15px; border-radius: 20px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
         
+        /* MODAL */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 4000; display: flex; align-items: center; justify-content: center; }
+        .modal-card { background: var(--card-bg); width: 90%; max-width: 350px; padding: 25px; border-radius: 12px; border: 1px solid var(--border); }
+
         #toast-box { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; }
         .toast-msg { background: var(--card-bg); border: 1px solid var(--border); color: var(--text-main); padding: 10px 20px; border-radius: 30px; margin-top: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 10px; animation: pop 0.3s; }
         @keyframes pop { from{transform: translateY(10px); opacity:0;} to{transform: translateY(0); opacity:1;} }
         
         .empty-state { padding: 30px; text-align: center; color: var(--text-muted); background: var(--bg); border-radius: 8px; border: 1px dashed var(--border); }
+        
+        /* REQUESTS CARD */
+        .req-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 15px; margin-bottom: 10px; }
+        .req-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-weight: 600; }
+        .req-actions { display: flex; gap: 10px; margin-top: 10px; }
+        .btn-sm { padding: 6px 12px; border-radius: 6px; border: none; font-size: 0.85rem; font-weight: 600; cursor: pointer; flex: 1; }
+        .btn-approve { background: var(--success); color: white; }
+        .btn-reject { background: var(--danger); color: white; }
+        
+        /* HELP CARD STYLES */
+        .contact-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border); }
+        .contact-item:last-child { border-bottom: none; }
+        .contact-info div:first-child { font-weight: 700; margin-bottom: 4px; }
+        .contact-info div:last-child { font-size: 0.85rem; color: var(--text-muted); }
+        .call-btn { text-decoration: none; background: var(--bg); border: 1px solid var(--border); padding: 8px 15px; border-radius: 20px; color: var(--text-main); font-size: 0.9rem; display: flex; gap: 8px; align-items: center; font-weight: 600; }
+        .call-btn:hover { background: rgba(37, 99, 235, 0.1); color: var(--primary); border-color: var(--primary); }
+
     </style>
 </head>
 <body>
 
     <div id="toast-box"></div>
+
+    <div id="extend-modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <h3 style="margin-bottom: 15px;">Request Extension</h3>
+            <p style="margin-bottom: 15px; font-size: 0.9rem; color: var(--text-muted);">Select new end time:</p>
+            <div class="time-row">
+                <select id="ext-h" class="select-box"></select>
+                <select id="ext-m" class="select-box"></select>
+            </div>
+            <input type="hidden" id="ext-ticket-code">
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn-main" onclick="closeModal('extend-modal')" style="background: var(--bg); color: var(--text-main); border: 1px solid var(--border);">Cancel</button>
+                <button class="btn-main" onclick="submitExtension()">Send Request</button>
+            </div>
+        </div>
+    </div>
 
     <div id="login-screen">
         <div class="login-card">
@@ -104,8 +160,7 @@
                 <input type="password" id="pass-in" class="login-input" placeholder="Password" required>
                 <button class="btn-main">Login</button>
             </form>
-            <div style="margin-top: 20px; font-size: 0.8rem; color: var(--text-muted);">Admin: admin / 12345</div>
-            <div style="margin-top: 10px; display: flex; justify-content: center;">
+            <div style="margin-top: 15px; display: flex; justify-content: center;">
                 <button class="theme-btn" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i> Theme</button>
             </div>
         </div>
@@ -114,10 +169,11 @@
     <div id="app-interface" class="app-container hidden">
         
         <nav class="mobile-nav">
+            <button onclick="toggleSidebar()" style="background:none; border:none; color:var(--text-main); font-size:1.2rem;"><i class="fa-solid fa-bars"></i></button>
             <span style="font-weight: 800; color: var(--primary);">ParkEase</span>
             <div style="display: flex; gap: 15px;">
                 <button onclick="toggleTheme()" style="background:none; border:none; color:var(--text-main); font-size:1.2rem;"><i class="fa-solid fa-moon"></i></button>
-                <button onclick="toggleSidebar()" style="background:none; border:none; color:var(--text-main); font-size:1.2rem;"><i class="fa-solid fa-bars"></i></button>
+                <button onclick="logout()" style="background:none; border:none; color:var(--danger); font-size:1.2rem;"><i class="fa-solid fa-right-from-bracket"></i></button>
             </div>
         </nav>
 
@@ -128,6 +184,7 @@
                 <button class="nav-btn active" onclick="nav('s-dash')"><i class="fa-solid fa-chart-pie"></i> Dashboard</button>
                 <button class="nav-btn" onclick="nav('s-reserve')"><i class="fa-solid fa-calendar-plus"></i> Reserve Spot</button>
                 <button class="nav-btn" onclick="nav('s-history')"><i class="fa-solid fa-ticket"></i> My Tickets</button>
+                <button class="nav-btn" onclick="nav('s-help')"><i class="fa-solid fa-circle-info"></i> Help & Support</button>
             </div>
 
             <div id="menu-admin" class="hidden">
@@ -135,6 +192,11 @@
                 <button class="nav-btn active" onclick="nav('a-dash')"><i class="fa-solid fa-gauge"></i> Overview</button>
                 <button class="nav-btn" onclick="nav('a-verify')"><i class="fa-solid fa-qrcode"></i> Gate Check</button>
                 <button class="nav-btn" onclick="nav('a-users')"><i class="fa-solid fa-users"></i> Manage Lots</button>
+                <button class="nav-btn" onclick="nav('a-requests')"><i class="fa-solid fa-envelope"></i> Messages <span id="req-badge" style="background:var(--danger); color:white; padding:2px 6px; border-radius:10px; font-size:0.7rem; margin-left:auto; display:none;">0</span></button>
+                
+                <button class="nav-btn" onclick="resetDatabase()" style="color: var(--danger); margin-top: 10px; border: 1px dashed var(--danger);">
+                    <i class="fa-solid fa-database"></i> Reset System
+                </button>
             </div>
 
             <div style="margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border);">
@@ -145,6 +207,15 @@
 
         <main class="main-wrapper">
             
+            <header class="app-header">
+                <div class="user-welcome">
+                    Hello, <b id="display-user">User</b>
+                </div>
+                <button class="btn-logout-top" onclick="logout()">
+                    <i class="fa-solid fa-power-off"></i> Logout
+                </button>
+            </header>
+
             <section id="s-dash" class="page-section active">
                 <h2 style="margin-bottom: 20px;">Dashboard</h2>
                 <div class="dash-grid">
@@ -201,6 +272,58 @@
                 <div id="my-tickets-list"></div>
             </section>
 
+            <section id="s-help" class="page-section hidden">
+                <h2 style="margin-bottom: 20px;">Help & Support</h2>
+                <div class="card">
+                    <h3 style="color: var(--primary); margin-bottom: 15px;"><i class="fa-solid fa-shield-halved"></i> Campus Guards</h3>
+                    <div class="contact-list">
+                        
+                        <div class="contact-item">
+                            <div class="contact-info">
+                                <div>Rajesh Kumar</div>
+                                <div>Head of Security (Main Gate)</div>
+                            </div>
+                            <a href="tel:1234567890" class="call-btn"><i class="fa-solid fa-phone"></i> Call</a>
+                        </div>
+
+                        <div class="contact-item">
+                            <div class="contact-info">
+                                <div>Vikram Singh</div>
+                                <div>Parking Supervisor (Lot A)</div>
+                            </div>
+                            <a href="tel:0987654321" class="call-btn"><i class="fa-solid fa-phone"></i> Call</a>
+                        </div>
+
+                        <div class="contact-item">
+                            <div class="contact-info">
+                                <div>Suresh Patel</div>
+                                <div>Night Shift Patrol</div>
+                            </div>
+                            <a href="tel:1122334455" class="call-btn"><i class="fa-solid fa-phone"></i> Call</a>
+                        </div>
+
+                        <div class="contact-item">
+                            <div class="contact-info">
+                                <div>Emergency Line</div>
+                                <div style="color: var(--danger);">For Urgent Issues Only</div>
+                            </div>
+                            <a href="tel:911" class="call-btn" style="color: var(--danger); border-color: var(--danger);"><i class="fa-solid fa-phone-volume"></i> SOS</a>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>FAQ</h3>
+                    <div style="margin-top: 10px;">
+                        <p style="font-weight: 700;">How do I extend my parking?</p>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 10px;">Go to "My Tickets" and click "Extend Time". An admin will review your request.</p>
+                        
+                        <p style="font-weight: 700;">What if I lose internet?</p>
+                        <p style="color: var(--text-muted); font-size: 0.9rem;">Your code is saved locally. Take a screenshot of your ticket just in case.</p>
+                    </div>
+                </div>
+            </section>
+
             <section id="a-dash" class="page-section hidden">
                 <h2 style="margin-bottom: 20px; color: var(--admin-color);">Admin Overview</h2>
                 <div class="card">
@@ -221,10 +344,15 @@
                 <h2 style="margin-bottom: 20px; color: var(--admin-color);">Active Lots</h2>
                 <div class="card" style="overflow-x: auto;">
                     <table id="admin-table">
-                        <thead><tr><th>Spot</th><th>User</th><th>Code</th><th>Time</th><th>Action</th></tr></thead>
+                        <thead><tr><th>Spot</th><th>User</th><th>Status</th><th>Code</th><th>Time</th><th>Action</th></tr></thead>
                         <tbody></tbody>
                     </table>
                 </div>
+            </section>
+
+            <section id="a-requests" class="page-section hidden">
+                <h2 style="margin-bottom: 20px; color: var(--admin-color);">Student Requests</h2>
+                <div id="requests-list"></div>
             </section>
 
         </main>
@@ -232,32 +360,40 @@
 
     <script>
         // --- CORE DATA & CONFIG ---
-        const DB_KEY = 'parkease_v4_db'; // New key to force clean slate
+        const DB_KEY = 'parkease_v6_db'; 
         const TOTAL_SPOTS = 20;
-        let db = { user: null, role: null, bookings: [] };
+        let db = { user: null, role: null, bookings: [], requests: [] }; 
 
         // --- INITIALIZATION ---
         window.onload = () => {
-            // 1. Theme Init
-            if(localStorage.getItem('parkease_theme') === 'dark') document.body.classList.add('dark-mode');
+            // 1. Theme Init (Ensuring persistence)
+            const savedTheme = localStorage.getItem('parkease_theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
             
             // 2. Populate Time Dropdowns
             const hours = []; for(let i=8; i<=23; i++) hours.push(i < 10 ? '0'+i : i);
             const mins = ['00', '15', '30', '45'];
             
-            ['start-h', 'end-h'].forEach(id => {
+            ['start-h', 'end-h', 'ext-h'].forEach(id => {
                 const el = document.getElementById(id);
-                hours.forEach(h => el.innerHTML += `<option value="${h}">${h}</option>`);
+                if(el) hours.forEach(h => el.innerHTML += `<option value="${h}">${h}</option>`);
             });
-            ['start-m', 'end-m'].forEach(id => {
+            ['start-m', 'end-m', 'ext-m'].forEach(id => {
                 const el = document.getElementById(id);
-                mins.forEach(m => el.innerHTML += `<option value="${m}">${m}</option>`);
+                if(el) mins.forEach(m => el.innerHTML += `<option value="${m}">${m}</option>`);
             });
 
             // 3. Load DB
             const saved = localStorage.getItem(DB_KEY);
             if(saved) {
-                try { db = JSON.parse(saved); } catch(e) { localStorage.removeItem(DB_KEY); }
+                try { 
+                    db = JSON.parse(saved); 
+                    if(!db.requests) db.requests = []; 
+                } catch(e) { localStorage.removeItem(DB_KEY); }
             }
             
             // 4. Check Session
@@ -286,8 +422,10 @@
         function initApp(role) {
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('app-interface').classList.remove('hidden');
-            
-            document.body.className = role === 'admin' ? 'admin-mode' : 'student-mode';
+            document.getElementById('display-user').innerText = db.user;
+
+            document.body.classList.remove('admin-mode', 'student-mode');
+            document.body.classList.add(role === 'admin' ? 'admin-mode' : 'student-mode');
             
             if(role === 'admin') {
                 document.getElementById('menu-student').classList.add('hidden');
@@ -306,8 +444,15 @@
             saveDB();
             location.reload();
         }
+        
+        function resetDatabase() {
+            if(confirm("⚠ WARNING: This will delete ALL bookings and user data. Are you sure?")) {
+                localStorage.removeItem(DB_KEY);
+                location.reload();
+            }
+        }
 
-        // --- NAVIGATION ---
+        // --- NAVIGATION & THEME ---
         function nav(pageId) {
             document.querySelectorAll('.page-section').forEach(el => el.classList.add('hidden'));
             document.getElementById(pageId).classList.remove('hidden');
@@ -318,10 +463,14 @@
         }
 
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+        
         function toggleTheme() { 
             document.body.classList.toggle('dark-mode'); 
-            localStorage.setItem('parkease_theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+            const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+            localStorage.setItem('parkease_theme', theme);
         }
+
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
         // --- CORE LOGIC ---
         let selectedSpotId = null;
@@ -355,7 +504,7 @@
                 }
             }
 
-            // 3. Render Tickets
+            // 3. Render Tickets (Student)
             const ticketList = document.getElementById('my-tickets-list');
             ticketList.innerHTML = '';
             const myTickets = db.bookings.filter(b => b.user === db.user);
@@ -364,14 +513,24 @@
                 ticketList.innerHTML = `<div class="empty-state">No active tickets found.</div>`;
             } else {
                 myTickets.forEach(b => {
+                    const hasReq = db.requests.some(r => r.code === b.code);
+                    const statusClass = b.status === 'parked' ? 'parked' : 'reserved';
                     ticketList.innerHTML += `
                     <div class="ticket">
-                        <div class="ticket-left">
-                            <div style="font-weight:800; color:var(--primary);">Spot #${b.spotId}</div>
-                            <div style="font-size:0.9rem; margin-top:5px;">${b.startTime} - ${b.endTime}</div>
-                            <span class="status-badge">${b.status.toUpperCase()}</span>
+                        <div class="ticket-main">
+                            <div class="ticket-left">
+                                <div style="font-weight:800; color:var(--primary);">Spot #${b.spotId}</div>
+                                <div style="font-size:0.9rem; margin-top:5px;">${b.startTime} - ${b.endTime}</div>
+                                <span class="status-badge ${statusClass}">${b.status.toUpperCase()}</span>
+                            </div>
+                            <div class="ticket-right">${b.code}</div>
                         </div>
-                        <div class="ticket-right">${b.code}</div>
+                        <div class="ticket-actions">
+                            ${hasReq 
+                                ? `<span style="font-size:0.8rem; color:var(--warning); font-weight:600;"><i class="fa-solid fa-clock"></i> Request Pending</span>` 
+                                : `<button class="btn-sm" style="border:1px solid var(--border); color:var(--primary);" onclick="openExtendModal('${b.code}')"><i class="fa-solid fa-clock"></i> Extend Time</button>`
+                            }
+                        </div>
                     </div>`;
                 });
             }
@@ -380,10 +539,53 @@
             const adminBody = document.querySelector('#admin-table tbody');
             adminBody.innerHTML = '';
             db.bookings.forEach(b => {
-                adminBody.innerHTML += `<tr><td>#${b.spotId}</td><td>${b.user}</td><td style="font-family:monospace;">${b.code}</td><td>${b.startTime}-${b.endTime}</td><td><button onclick="deleteBooking('${b.code}')" style="color:red; background:none; border:none; cursor:pointer;"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+                let badge = b.status === 'parked' 
+                    ? `<span class="status-badge parked"><i class="fa-solid fa-check"></i> INSIDE</span>`
+                    : `<span class="status-badge reserved"><i class="fa-solid fa-clock"></i> PENDING</span>`;
+                
+                adminBody.innerHTML += `
+                <tr>
+                    <td>#${b.spotId}</td>
+                    <td>${b.user}</td>
+                    <td>${badge}</td>
+                    <td style="font-family:monospace;">${b.code}</td>
+                    <td>${b.startTime}-${b.endTime}</td>
+                    <td><button onclick="deleteBooking('${b.code}')" style="color:red; background:none; border:none; cursor:pointer;"><i class="fa-solid fa-trash"></i></button></td>
+                </tr>`;
             });
 
-            // 5. Stats
+            // 5. Admin Requests Rendering
+            const reqList = document.getElementById('requests-list');
+            reqList.innerHTML = '';
+            if(db.requests.length === 0) {
+                reqList.innerHTML = `<div class="empty-state">No pending requests.</div>`;
+                document.getElementById('req-badge').style.display = 'none';
+            } else {
+                document.getElementById('req-badge').innerText = db.requests.length;
+                document.getElementById('req-badge').style.display = 'inline-block';
+                
+                db.requests.forEach(r => {
+                    const [h, m] = r.reqTime.split(':');
+                    reqList.innerHTML += `
+                    <div class="req-card">
+                        <div class="req-header">
+                            <span>${r.user} (Spot #${r.spotId})</span>
+                            <span style="color:var(--text-muted);">${r.currTime} <i class="fa-solid fa-arrow-right"></i></span>
+                        </div>
+                        <div style="background:var(--bg); padding:10px; border-radius:6px; display:flex; align-items:center; gap:10px;">
+                            <label style="font-size:0.8rem; font-weight:700;">Set Time:</label>
+                            <input type="number" id="h-${r.id}" value="${h}" min="8" max="23" style="width:50px; padding:5px; border-radius:4px; border:1px solid var(--border);"> : 
+                            <input type="number" id="m-${r.id}" value="${m}" step="15" min="0" max="59" style="width:50px; padding:5px; border-radius:4px; border:1px solid var(--border);">
+                        </div>
+                        <div class="req-actions">
+                            <button class="btn-sm btn-reject" onclick="handleRequest(${r.id}, false)">Reject</button>
+                            <button class="btn-sm btn-approve" onclick="handleRequest(${r.id}, true)">Update</button>
+                        </div>
+                    </div>`;
+                });
+            }
+
+            // 6. Stats
             const count = db.bookings.length;
             document.getElementById('dash-free').innerText = TOTAL_SPOTS - count;
             document.getElementById('admin-total').innerText = count;
@@ -394,6 +596,7 @@
             document.getElementById('dash-pct').innerText = pct + "%";
         }
 
+        // --- BOOKING LOGIC ---
         function bookSpot() {
             if(!selectedSpotId) return showToast('Select a spot!', 'error');
             
@@ -404,16 +607,11 @@
             
             const start = `${sH}:${sM}`;
             const end = `${eH}:${eM}`;
-            
-            // Get Current Time
             const now = new Date();
             const nowStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
 
             if(start >= end) return showToast('End time must be after start', 'error');
-            
-            // CRITICAL FIX: PREVENT BOOKING PAST TIMES
             if(end < nowStr) return showToast('Time has already passed!', 'error');
-            
             if(db.bookings.some(b => b.spotId === selectedSpotId)) return showToast('Spot just taken!', 'error');
 
             const code = Math.floor(1000 + Math.random() * 9000).toString();
@@ -422,6 +620,63 @@
             selectedSpotId = null;
             showToast('Booking Confirmed!', 'success');
             nav('s-history');
+        }
+
+        // --- EXTENSION LOGIC ---
+        function openExtendModal(code) {
+            document.getElementById('ext-ticket-code').value = code;
+            document.getElementById('extend-modal').classList.remove('hidden');
+        }
+
+        function submitExtension() {
+            const code = document.getElementById('ext-ticket-code').value;
+            const h = document.getElementById('ext-h').value;
+            const m = document.getElementById('ext-m').value;
+            const newTime = `${h}:${m}`;
+            
+            const booking = db.bookings.find(b => b.code === code);
+            if(!booking) return;
+
+            if(newTime <= booking.startTime) return showToast('New time must be later!', 'error');
+
+            const req = {
+                id: Date.now(),
+                user: db.user,
+                code: code,
+                spotId: booking.spotId,
+                currTime: booking.endTime,
+                reqTime: newTime
+            };
+            
+            db.requests.push(req);
+            saveDB();
+            closeModal('extend-modal');
+            showToast('Request sent to Admin!', 'success');
+            refreshData();
+        }
+
+        function handleRequest(reqId, approved) {
+            const reqIndex = db.requests.findIndex(r => r.id === reqId);
+            if(reqIndex === -1) return;
+            const req = db.requests[reqIndex];
+
+            if(approved) {
+                const h = document.getElementById(`h-${reqId}`).value.padStart(2, '0');
+                const m = document.getElementById(`m-${reqId}`).value.padStart(2, '0');
+                const finalTime = `${h}:${m}`;
+
+                const booking = db.bookings.find(b => b.code === req.code);
+                if(booking) {
+                    booking.endTime = finalTime;
+                    showToast(`Updated Spot #${booking.spotId} to ${finalTime}`, 'success');
+                }
+            } else {
+                showToast('Request Rejected', 'warning');
+            }
+
+            db.requests.splice(reqIndex, 1);
+            saveDB();
+            refreshData();
         }
 
         function verifyGate() {
@@ -439,6 +694,7 @@
         function deleteBooking(code) {
             if(confirm('Remove this booking?')) {
                 db.bookings = db.bookings.filter(b => b.code !== code);
+                db.requests = db.requests.filter(r => r.code !== code);
                 saveDB(); refreshData();
                 showToast('Booking Removed', 'success');
             }
@@ -459,3 +715,4 @@
     </script>
 </body>
 </html>
+
